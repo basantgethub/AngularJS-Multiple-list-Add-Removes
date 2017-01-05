@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html data-ng-app="myApp">
+
+<head>
+  <meta charset="utf-8" />
+  <title>AngularJS Multiple List Add & Removes</title>
+  <script>
+    document.write('<base href="' + document.location + '" />');
+  </script>
+  <link href="style.css" rel="stylesheet" />
+  <script data-semver="1.2.28" src="https://code.angularjs.org/1.2.28/angular.js" data-require="angular.js@1.2.x"></script>
+  <script>
+		var app = angular.module('myApp', []);
+
+			app.controller('MainCtrl', function($scope) {
+				var vm = this;
+				vm.main = {
+					categories: []
+				};
+				
+				
+				vm.addCat = function() {
+					var cat = {name:'',lastname:'',firstname:''};
+					vm.main.categories.push(cat);
+				   
+				};
+				$scope.$on('delCategory', function(event, index){
+					
+					var cats = vm.main.categories;
+					cats.splice(index, 1);
+				});
+			});
+
+			app.directive('category', function() {
+				return {
+					restrict: 'E',
+					replace: true,
+					controllerAs: 'cc',
+					controller: function ($scope) {
+						var vm = this;
+						vm.removeCat = function(index) {
+							$scope.$emit('delCategory', index);
+						};
+					}
+				};
+			});
+
+  </script>
+  
+</head>
+
+<body>
+  <form name="form" ng-submit="mc.submit()" ng-controller="MainCtrl as mc">
+    {{ mc.main }}
+    <button ng-click="mc.addCat()">Add Category</button>
+
+    <category ng-repeat="cat in mc.main.categories">
+      <ul class="first-level">
+          <br>
+          <input type="text" ng-model="mc.main.categories[$index].name">
+		  <input type="text" ng-model="mc.main.categories[$index].lastname">
+		  <input type="text" ng-model="mc.main.categories[$index].firstname">
+          <button ng-click="cc.removeCat($index)">Del Category</button>
+      </ul>
+    </category>
+
+    <button class="button" type="submit">Submit</button>
+  </form>
+</body>
+
+</html>
